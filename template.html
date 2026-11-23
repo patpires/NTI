@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Feliz Natal - Nosso Setor</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Mountains+of+Christmas:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Quicksand', sans-serif;
+    background: radial-gradient(ellipse at 50% 0%, #1d3b6e 0%, #0d1b3a 45%, #050b1c 100%);
+    color: #fff;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #snow { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+  /* ---------- cenário ---------- */
+  .scene { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+  .stars { position: absolute; inset: 0; }
+  .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle 3s infinite ease-in-out; }
+  @keyframes twinkle { 0%,100% { opacity: .2 } 50% { opacity: 1 } }
+  .moon {
+    position: absolute; top: 6%; right: 9%; width: 70px; height: 70px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fffdf0, #f4e9b8 60%, #d9c98a);
+    box-shadow: 0 0 40px 12px rgba(255, 245, 200, .35);
+  }
+  .aurora {
+    position: absolute; top: 0; left: -20%; width: 140%; height: 45%;
+    background: linear-gradient(100deg, transparent 20%, rgba(80,255,180,.10) 40%, rgba(120,140,255,.12) 55%, transparent 75%);
+    filter: blur(30px); animation: aurora 14s infinite alternate ease-in-out;
+  }
+  @keyframes aurora { from { transform: translateX(-8%) skewY(-3deg) } to { transform: translateX(8%) skewY(3deg) } }
+  .hills { position: absolute; bottom: 0; left: 0; width: 100%; height: 38%; }
+
+  /* ---------- tela de abertura ---------- */
+  #intro {
+    position: fixed; inset: 0; z-index: 20; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; padding: 24px;
+    background: rgba(5, 11, 28, .55); backdrop-filter: blur(3px);
+    transition: opacity 1.2s ease, visibility 1.2s;
+    cursor: pointer;
+  }
+  #intro.hide { opacity: 0; visibility: hidden; }
+  .envelope {
+    width: 230px; height: 150px; position: relative; margin-bottom: 30px;
+    background: linear-gradient(135deg, #b3132b, #7d0c1e); border-radius: 10px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.5); animation: float 3s infinite ease-in-out;
+  }
+  .envelope::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 0; height: 0;
+    border-left: 115px solid transparent; border-right: 115px solid transparent;
+    border-top: 85px solid #9a0f24; filter: drop-shadow(0 4px 4px rgba(0,0,0,.25));
+  }
+  .seal {
+    position: absolute; top: 58px; left: 50%; transform: translateX(-50%);
+    width: 54px; height: 54px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffe28a, #d4a017 60%, #a87b0a);
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+    box-shadow: 0 3px 8px rgba(0,0,0,.4);
+  }
+  @keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-12px) } }
+  #intro h2 { font-family: 'Mountains of Christmas', cursive; font-size: 2.2rem; color: #ffe28a; text-shadow: 0 0 15px rgba(255, 210, 100, .6); }
+  #intro p { margin-top: 10px; font-size: 1.05rem; opacity: .9; animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: .5 } 50% { opacity: 1 } }
+
+  /* ---------- cartão ---------- */
+  #card {
+    position: relative; z-index: 5; height: 100%; overflow-y: auto;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 28px 16px 40px; opacity: 0; transition: opacity 1.5s ease .4s;
+  }
+  #card.show { opacity: 1; }
+  .title {
+    font-family: 'Great Vibes', cursive; font-size: clamp(3rem, 13vw, 5.2rem); line-height: 1;
+    color: #ffe28a; text-align: center;
+    text-shadow: 0 0 10px rgba(255, 215, 110, .8), 0 0 30px rgba(255, 160, 60, .5), 2px 3px 0 #7d0c1e;
+  }
+  .subtitle { font-family: 'Mountains of Christmas', cursive; font-size: clamp(1.1rem, 4.5vw, 1.5rem); margin: 6px 0 18px; color: #e9f1ff; letter-spacing: 1px; }
+
+  /* ---------- globo de neve ---------- */
+  .globe-wrap { position: relative; width: min(86vw, 420px); flex-shrink: 0; cursor: pointer; }
+  .globe-wrap.shake { animation: shake .9s ease; }
+  @keyframes shake {
+    0%,100% { transform: rotate(0) } 15% { transform: rotate(-9deg) translateX(-8px) }
+    30% { transform: rotate(8deg) translateX(8px) } 45% { transform: rotate(-6deg) } 60% { transform: rotate(5deg) } 80% { transform: rotate(-2deg) }
+  }
+  .globe {
+    position: relative; width: 100%; aspect-ratio: 1; border-radius: 50%; overflow: hidden;
+    box-shadow: 0 0 0 3px rgba(255,255,255,.35), 0 0 45px rgba(160, 210, 255, .45), inset 0 0 40px rgba(255,255,255,.35);
+    z-index: 2;
+  }
+  .globe img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .globe canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .glass {
+    position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+    background:
+      radial-gradient(circle at 30% 22%, rgba(255,255,255,.55) 0%, rgba(255,255,255,.12) 14%, transparent 28%),
+      radial-gradient(circle at 75% 80%, rgba(255,255,255,.18) 0%, transparent 25%),
+      radial-gradient(circle at 50% 50%, transparent 62%, rgba(180, 220, 255, .25) 80%, rgba(255,255,255,.45) 100%);
+  }
+  .base {
+    position: relative; width: 78%; margin: -9% auto 0; height: 0; padding-bottom: 26%; z-index: 3;
+  }
+  .base-top {
+    position: absolute; top: 0; left: 6%; width: 88%; height: 30%;
+    background: linear-gradient(180deg, #ffe9a3, #d4a017 50%, #94690a);
+    border-radius: 50% / 100% 100% 0 0; box-shadow: 0 4px 6px rgba(0,0,0,.4);
+  }
+  .base-body {
+    position: absolute; top: 22%; left: 0; width: 100%; height: 78%;
+    background: linear-gradient(180deg, #8e1022 0%, #b3132b 30%, #6d0a19 100%);
+    clip-path: polygon(6% 0, 94% 0, 100% 100%, 0 100%);
+    border-radius: 0 0 14px 14px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: inset 0 -8px 15px rgba(0,0,0,.4);
+  }
+  .base-body::after {
+    content: ''; position: absolute; bottom: 10%; left: 4%; width: 92%; height: 6%;
+    background: linear-gradient(90deg, #94690a, #ffe9a3, #d4a017, #ffe9a3, #94690a);
+  }
+  .plaque {
+    font-family: 'Mountains of Christmas', cursive; font-size: clamp(.95rem, 4.2vw, 1.35rem);
+    color: #ffe28a; text-shadow: 0 1px 2px #000; margin-top: -4%;
+  }
+  .hint { font-size: .85rem; opacity: .75; margin-top: 10px; text-align: center; }
+
+  /* ---------- mensagem ---------- */
+  .message {
+    margin-top: 22px; max-width: 520px; width: 100%;
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255, 226, 138, .4);
+    border-radius: 18px; padding: 22px 20px; text-align: center; line-height: 1.65;
+    backdrop-filter: blur(6px); box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  .message p { font-size: 1.02rem; }
+  .message .sign { font-family: 'Great Vibes', cursive; font-size: 1.9rem; color: #ffe28a; margin-top: 10px; }
+  .holly { font-size: 1.6rem; letter-spacing: 6px; }
+
+  /* ---------- botão de música ---------- */
+  #musicBtn {
+    position: fixed; right: 16px; bottom: 16px; z-index: 30; width: 52px; height: 52px; border-radius: 50%;
+    border: 2px solid #ffe28a; background: #b3132b; color: #fff; font-size: 22px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.5); display: none; cursor: pointer;
+  }
+  #musicBtn.playing { animation: spin 4s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg) } }
+
+  /* luzinhas no topo */
+  .lights { position: fixed; top: 0; left: 0; width: 100%; height: 34px; z-index: 6; display: flex; justify-content: space-around; pointer-events: none; }
+  .lights::before { content: ''; position: absolute; top: 6px; left: 0; width: 100%; height: 2px; background: #2c3e2c; border-radius: 50%; }
+  .bulb { width: 10px; height: 16px; border-radius: 50%; margin-top: 8px; animation: glow 1.4s infinite alternate; }
+  .bulb:nth-child(4n+1) { background: #ff3b3b; color: #ff3b3b; }
+  .bulb:nth-child(4n+2) { background: #ffd93b; color: #ffd93b; animation-delay: .35s; }
+  .bulb:nth-child(4n+3) { background: #3bff7a; color: #3bff7a; animation-delay: .7s; }
+  .bulb:nth-child(4n+4) { background: #3bb4ff; color: #3bb4ff; animation-delay: 1.05s; }
+  @keyframes glow { from { opacity: .35; box-shadow: none } to { opacity: 1; box-shadow: 0 0 12px 3px currentColor } }
+</style>
+</head>
+<body>
+
+<!-- Cenário -->
+<div class="scene">
+  <div class="aurora"></div>
+  <div class="stars" id="stars"></div>
+  <div class="moon"></div>
+  <svg class="hills" viewBox="0 0 1000 380" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="h1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe0f5"/><stop offset="1" stop-color="#8fa9cc"/></linearGradient>
+      <linearGradient id="h2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#c7d8ef"/></linearGradient>
+    </defs>
+    <path d="M0 170 Q150 90 300 150 T620 130 T1000 150 V380 H0Z" fill="url(#h1)" opacity=".75"/>
+    <g fill="#1f4a35">
+      <polygon points="90,175 115,95 140,175"/><polygon points="130,160 150,100 170,160"/>
+      <polygon points="780,160 805,80 830,160"/><polygon points="830,170 850,110 870,170"/>
+      <polygon points="880,165 905,90 930,165"/>
+    </g>
+    <path d="M0 250 Q200 170 450 230 T1000 215 V380 H0Z" fill="url(#h2)"/>
+    <!-- casinha -->
+    <g transform="translate(640,175)">
+      <rect x="0" y="25" width="60" height="40" fill="#7a3b1f"/>
+      <polygon points="-8,28 30,0 68,28" fill="#ffffff"/>
+      <rect x="10" y="35" width="14" height="12" fill="#ffd36b"/><rect x="36" y="35" width="14" height="12" fill="#ffd36b"/>
+      <rect x="25" y="48" width="12" height="17" fill="#4a2410"/>
+    </g>
+  </svg>
+</div>
+
+<canvas id="snow"></canvas>
+<div class="lights" id="lights"></div>
+
+<!-- Abertura -->
+<div id="intro">
+  <div class="envelope"><div class="seal">🎄</div></div>
+  <h2>Um presente para você!</h2>
+  <p>Toque para abrir o cartão</p>
+</div>
+
+<!-- Cartão -->
+<main id="card">
+  <h1 class="title">Feliz Natal</h1>
+  <div class="subtitle">& um Próspero Ano Novo!</div>
+
+  <div class="globe-wrap" id="globeWrap">
+    <div class="globe">
+      <img src="__FOTO__" alt="Nossa equipe">
+      <canvas id="globeSnow"></canvas>
+      <div class="glass"></div>
+    </div>
+    <div class="base">
+      <div class="base-top"></div>
+      <div class="base-body"><span class="plaque">Nossa Equipe ✨</span></div>
+    </div>
+  </div>
+  <div class="hint">Toque no globo para sacudir a neve ❄️</div>
+
+  <div class="message">
+    <div class="holly">🎄 ⭐ 🎁</div>
+    <p>Que a magia do Natal encha nossos corações de paz, alegria e gratidão.<br>
+    Obrigado por cada dia de parceria, risadas e conquistas juntos!<br>
+    Que 2027 venha repleto de saúde, união e muitas realizações.</p>
+    <div class="sign">Com carinho, nosso setor</div>
+  </div>
+</main>
+
+<button id="musicBtn" aria-label="Música">🎵</button>
+<audio id="music" src="__MUSICA__" loop preload="auto"></audio>
+
+<script>
+  // Estrelas
+  const stars = document.getElementById('stars');
+  for (let i = 0; i < 90; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.2 + .6;
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*60}%;animation-delay:${Math.random()*3}s`;
+    stars.appendChild(s);
+  }
+  // Luzinhas
+  const lights = document.getElementById('lights');
+  const nBulbs = Math.max(12, Math.floor(window.innerWidth / 32));
+  for (let i = 0; i < nBulbs; i++) { const b = document.createElement('div'); b.className = 'bulb'; lights.appendChild(b); }
+
+  // Neve de fundo
+  const sc = document.getElementById('snow'), sx = sc.getContext('2d');
+  let flakes = [];
+  function resize() {
+    sc.width = innerWidth; sc.height = innerHeight;
+    flakes = Array.from({ length: Math.floor(innerWidth / 6) }, () => ({
+      x: Math.random() * sc.width, y: Math.random() * sc.height,
+      r: Math.random() * 2.8 + .8, s: Math.random() * 1 + .4, d: Math.random() * Math.PI * 2
+    }));
+  }
+  resize(); addEventListener('resize', resize);
+
+  // Neve dentro do globo
+  const gc = document.getElementById('globeSnow'), gx = gc.getContext('2d');
+  let gFlakes = [];
+  function resizeGlobe() {
+    const r = gc.getBoundingClientRect();
+    gc.width = r.width * devicePixelRatio; gc.height = r.height * devicePixelRatio;
+  }
+  function makeGlobeFlakes(burst) {
+    gFlakes = Array.from({ length: 160 }, () => ({
+      x: Math.random() * gc.width,
+      y: burst ? gc.height * (0.4 + Math.random() * 0.6) : Math.random() * gc.height,
+      r: (Math.random() * 2.6 + 1) * devicePixelRatio,
+      vx: burst ? (Math.random() - .5) * 9 * devicePixelRatio : 0,
+      vy: burst ? -(Math.random() * 10 + 4) * devicePixelRatio : (Math.random() * .6 + .3) * devicePixelRatio,
+      d: Math.random() * Math.PI * 2
+    }));
+  }
+
+  function loop() {
+    sx.clearRect(0, 0, sc.width, sc.height);
+    sx.fillStyle = 'rgba(255,255,255,.85)';
+    for (const f of flakes) {
+      f.d += .01; f.y += f.s; f.x += Math.sin(f.d) * .5;
+      if (f.y > sc.height) { f.y = -5; f.x = Math.random() * sc.width; }
+      sx.beginPath(); sx.arc(f.x, f.y, f.r, 0, Math.PI * 2); sx.fill();
+    }
+    gx.clearRect(0, 0, gc.width, gc.height);
+    gx.fillStyle = 'rgba(255,255,255,.92)';
+    gx.shadowColor = 'rgba(255,255,255,.9)'; gx.shadowBlur = 4;
+    const g = .12 * devicePixelRatio;
+    for (const f of gFlakes) {
+      f.d += .03;
+      f.vy += (f.vy < .8 * devicePixelRatio) ? g : 0;
+      f.vx *= .96; f.vy *= .985;
+      f.x += f.vx + Math.sin(f.d) * .4; f.y += f.vy;
+      if (f.x < 0) f.x = gc.width; if (f.x > gc.width) f.x = 0;
+      if (f.y > gc.height + 5) { f.y = -5; f.x = Math.random() * gc.width; f.vy = (Math.random() * .6 + .3) * devicePixelRatio; }
+      gx.beginPath(); gx.arc(f.x, f.y, f.r, 0, Math.PI * 2); gx.fill();
+    }
+    requestAnimationFrame(loop);
+  }
+
+  // Abrir cartão + música
+  const intro = document.getElementById('intro'), card = document.getElementById('card');
+  const music = document.getElementById('music'), btn = document.getElementById('musicBtn');
+  music.volume = .7;
+  function setPlaying(p) { btn.textContent = p ? '🎵' : '🔇'; btn.classList.toggle('playing', p); }
+  intro.addEventListener('click', () => {
+    intro.classList.add('hide'); card.classList.add('show'); btn.style.display = 'block';
+    music.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    setTimeout(() => { resizeGlobe(); makeGlobeFlakes(true); shake(); }, 600);
+  });
+  btn.addEventListener('click', () => {
+    if (music.paused) music.play().then(() => setPlaying(true)); else { music.pause(); setPlaying(false); }
+  });
+
+  const wrap = document.getElementById('globeWrap');
+  function shake() { wrap.classList.remove('shake'); void wrap.offsetWidth; wrap.classList.add('shake'); }
+  wrap.addEventListener('click', () => { shake(); makeGlobeFlakes(true); });
+  addEventListener('resize', resizeGlobe);
+
+  resizeGlobe(); makeGlobeFlakes(false); loop();
+</script>
+</body>
+</html>
